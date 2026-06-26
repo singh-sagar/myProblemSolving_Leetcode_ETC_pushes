@@ -1,0 +1,42 @@
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {    
+     
+     vector<vector<pair<int,int>>> v(n); 
+
+     for(int i=0;i<flights.size();i++){
+         v[flights[i][0]].push_back({flights[i][1],flights[i][2]});
+     }
+   
+     vector<int> minStops(n,INT_MAX);
+
+     priority_queue<vector<int>, vector<vector<int>>, greater<vector<int>>> minHeap;
+
+     minHeap.push({0,src,0});
+     
+     while(!minHeap.empty()){
+
+     vector<int> curr = minHeap.top();
+     minHeap.pop();
+     int num=curr[1];
+     int cost= curr[0];
+     int stops=curr[2];
+
+     if(num == dst) return cost;
+
+     if(stops >= minStops[num]) continue;
+     
+     minStops[num] = stops;
+     
+     if(stops > k) continue;
+ 
+     for(int i=0;i<v[num].size();i++){
+        int nbr= v[num][i].first;
+        int time=v[num][i].second;
+        minHeap.push({time + cost,nbr,stops+1});     
+     }  
+     }
+     return -1;    
+
+    }
+};
